@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Web SSH</title>
+  <link rel="stylesheet" href="./css/xterm.css">
+  <script src="./js/xterm.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    #terminal {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="terminal"></div>
+  <script>
+    let w = document.documentElement.offsetWidth || document.body.offsetWidth;
+    let h = document.documentElement.offsetHeight || document.body.offsetHeight;
+
+    const ws = new WebSocket('ws://localhost:3000');
+
+    const term = new Terminal({
+      rendererType: "canvas", //渲染类型
+      rows: 40, //行数，影响最小高度
+      cols: 100, // 列数，影响最小宽度
+      convertEol: true, //启用时，光标将设置为下一行的开头
+      // scrollback: 50, //终端中的滚动条回滚量
+      disableStdin: false, //是否应禁用输入。
+      cursorStyle: "underline", //光标样式
+      cursorBlink: true, //光标闪烁
+      rightClickSelectsWord: true, // 是否支持鼠标右键选中整行
+      theme: {
+        foreground: '#F8F8F8',
+        background: '#2D2E2C',
+        cursor: "help", //设置光标
+        lineHeight: 16,
+      },
+      fontFamily: '"Cascadia Code", Menlo, monospace'
+    });
+
+    term.open(document.getElementById('terminal'));
+    term.focus()
+
+    term.writeln("Welcome to \x1b[1;32mYorlg\x1b[0m.")
+    term.writeln('This is Web Terminal of Modb; Good Good Study, Day Day Up.')
+
+    // 接收来自服务器的消息并将其显示在终端窗口中
+    ws.onmessage = (event) => {
+      term.write(event.data)
+    };
+    // 读取键盘输入并将其发送到服务器
+    term.onData((e) => {
+      // console.log(e);
+      // 这里不做任何判断 直接发送后端，后端做判断
+      ws.send(e)
+    });
+
+  </script>
+</body>
+
+</html>
