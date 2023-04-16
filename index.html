@@ -4,25 +4,29 @@
 <head>
   <meta charset="utf-8">
   <title>Web SSH</title>
-  <link rel="stylesheet" href="./css/xterm.min.css">
-  <script src="./js/xterm.min.js"></script>
-  <!-- <script src="./js/xterm-addon-fit.min.js"></script>   -->
+  <link rel="stylesheet" href="node_modules/xterm/css/xterm.css">
   <style>
-    * {
+    html,
+    body,
+    #terminal {
+      height: 100%;
+      width: 100%;
       margin: 0;
       padding: 0;
     }
 
-    #terminal {
-      width: 100%;
-      height: 100%;
+    .terminal {
+      width: 100% !important;
+      height: 100% !important;
     }
   </style>
 </head>
 
 <body>
   <div id="terminal"></div>
-  <script type="text/javascript" src="./js/index.js" charset="utf-8"></script>
+  <script src="node_modules/xterm/lib/xterm.js"></script>
+  <script src="node_modules/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
+  <script src="./static/index.js"></script>
 </body>
 
 </html>
