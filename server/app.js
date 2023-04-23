@@ -1,5 +1,4 @@
 const http = require('http');
-const cors = require('cors');
 const WebSocket = require('ws');
 const readline = require('readline');
 const { NodeSSH } = require('node-ssh');
@@ -118,8 +117,6 @@ const server = http.createServer((req, res) => {
   res.end('WebSocket 代理服务器');
 });
 
-// 使用 cors 中间件 以允许跨域请求
-server.on('request', cors());
 
 server.on('upgrade', (request, socket, head) => {
   console.log('WebSocket 连接已升级');
