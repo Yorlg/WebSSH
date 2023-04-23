@@ -1,17 +1,81 @@
-const ws = new WebSocket(`ws://${location.hostname}:3000`)
+const terminal = document.getElementById('terminal');
+let ws;
+
+
+function connectWebSocket (sshCredentials) {
+  ws = new WebSocket(`ws://${location.hostname}:3000`);
+
+  ws.addEventListener('open', (event) => {
+    ws.send(JSON.stringify(sshCredentials));
+    overlay.style.display = 'none';
+
+    ws.onmessage = (event) => {
+      term.write(event.data)
+
+      debounce(() => {
+        fitAddon.fit();
+        term.resize(80, term.rows);
+      }, 1000)();
+    };
+
+    term.onData((e) => {
+      ws.send(e)
+    });
+  });
+
+}
+
+const form = document.getElementById('ssh-form');
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const ip = document.getElementById('ip').value;
+  const port = document.getElementById('port').value;
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  const sshCredentials = {
+    ip,
+    port,
+    username,
+    password,
+  };
+
+  // 将 SSH 凭据存储在本地
+  localStorage.setItem('sshCredentials', JSON.stringify(sshCredentials));
+
+  connectWebSocket(sshCredentials);
+});
+
+// 在页面加载时显示弹窗
+window.addEventListener('load', () => {
+  const storedCredentials = localStorage.getItem('sshCredentials');
+
+  if (storedCredentials) {
+    const sshCredentials = JSON.parse(storedCredentials);
+    document.getElementById('ip').value = sshCredentials.ip;
+    document.getElementById('port').value = sshCredentials.port;
+    document.getElementById('username').value = sshCredentials.username;
+    document.getElementById('password').value = sshCredentials.password;
+
+    connectWebSocket(sshCredentials);
+  } else {
+    overlay.style.display = 'block';
+  }
+});
+
 
 const term = new Terminal({
-  rendererType: "canvas", //渲染类型
-  rows: 45, //行数，影响最小高度
-  convertEol: true, //启用时，光标将设置为下一行的开头
-  disableStdin: false, //是否应禁用输入。
-  cursorStyle: "underline", //光标样式
-  cursorBlink: true, //光标闪烁
-  rightClickSelectsWord: true, // 是否支持鼠标右键选中整行
+  rendererType: "canvas",
+  rows: 45,
+  convertEol: true,
+  cursorStyle: "underline",
+  cursorBlink: true,
+  rightClickSelectsWord: true,
   theme: {
     foreground: '#F8F8F8',
     background: '#2D2E2C',
-    cursor: "help", //设置光标
+    cursor: "help",
     lineHeight: 14,
   },
   fontFamily: '"Cascadia Code", Menlo, monospace'
@@ -20,26 +84,26 @@ const term = new Terminal({
 const fitAddon = new FitAddon.FitAddon();
 term.loadAddon(fitAddon);
 
-// 第一行显示的内容
-term.writeln("Welcome to \x1b[1;32mYorlg\x1b[0m.") // \x1b[1;32mYorlg\x1b[0m 为绿色
-term.writeln('This is Web Terminal of Modb;\n') // 换行
+term.writeln("Welcome to \x1b[1;32mYorlg\x1b[0m.")
+term.writeln('This is Web Terminal of Modb;\n')
 
 fitAddon.fit();
-// 当窗口大小更改时，适应终端大小
-// window.addEventListener('resize', () => {
-//   fitAddon.fit();
-// });
 
-term.open(document.getElementById('terminal')); // 打开终端
-term.focus(); // 焦点
-
-// 接收来自服务器的消息并将其显示在终端窗口中
-ws.onmessage = (event) => {
-  term.write(event.data)
-};
-// 读取键盘输入并将其发送到服务器
-term.onData((e) => {
-  // console.log(e);
-  // 这里不做任何判断 直接发送后端，后端做判断
-  ws.send(e)
+window.addEventListener('resize', () => {
+  fitAddon.fit();
+  term.resize(80, term.rows);
 });
+
+term.open(terminal);
+term.focus();
+
+// 用于防抖的函数
+function debounce (fn, delay) {
+  let timer = null;
+  return function () {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn.apply(this, arguments);
+    }, delay);
+  };
+}

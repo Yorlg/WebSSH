@@ -5,25 +5,33 @@
   <meta charset="utf-8">
   <title>Web SSH</title>
   <link rel="stylesheet" href="node_modules/xterm/css/xterm.css">
-  <style>
-    html,
-    body,
-    #terminal {
-      height: 100%;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-    }
-
-    .terminal {
-      width: 100% !important;
-      height: 100% !important;
-    }
-  </style>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 </head>
 
 <body>
+  <!-- 终端 -->
   <div id="terminal"></div>
+  <!-- 登录弹窗 -->
+  <div id="overlay" class="overlay">
+    <form id="ssh-form" class="ssh-form">
+      <label for="ip">IP 地址:</label>
+      <input type="text" id="ip" required>
+      <br>
+      <label for="port">端口:</label>
+      <input type="number" id="port" required>
+      <br>
+      <label for="username">用户名:</label>
+      <input type="text" id="username" required>
+      <br>
+      <label for="password">密码:</label>
+      <input type="password" id="password" required>
+      <br>
+      <button type="submit">连接</button>
+    </form>
+  </div>
+
+
   <script src="node_modules/xterm/lib/xterm.js"></script>
   <script src="node_modules/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
   <script src="./static/index.js"></script>
