@@ -3,7 +3,8 @@ let ws;
 
 
 function connectWebSocket (sshCredentials) {
-  ws = new WebSocket(`ws://${location.hostname}:3000`);
+  const isHttps = location.protocol === 'https:';
+  ws = new WebSocket(`${isHttps ? "wss" : "ws"}://${location.hostname}:${location.port}/ssh`);
 
   ws.addEventListener('open', (event) => {
     ws.send(JSON.stringify(sshCredentials));
