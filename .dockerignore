@@ -1,1 +1,7 @@
-.git
+.git/
+node_modules/
+webpack.config.js
+.gitignore
+docs/
+README.md
+.vscode/
