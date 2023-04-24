@@ -1,3 +1,8 @@
+import { Terminal } from 'xterm';
+import 'xterm/css/xterm.css';
+import * as FitAddon from 'xterm-addon-fit';
+import '../css/style.css';
+
 const terminal = document.getElementById('terminal');
 let ws;
 

@@ -1,16 +1,24 @@
 const express = require("express");
 const server = express();
+const compression = require('compression');
 require("express-ws")(server);
+const path = require('path');
 
-server.use(express.static("static/"));
-server.use(express.static("node_modules/"));
+// 启用压缩
+server.use(compression());
+
+server.use(express.static(path.join(__dirname, 'dist')));
+
+server.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
 const readline = require('readline');
 const { NodeSSH } = require('node-ssh');
 
 const ssh = new NodeSSH();
 
-async function handleConnection(socket) {
+async function handleConnection (socket) {
     console.log('连接已建立');
 
     let isAlive = true;
@@ -46,7 +54,7 @@ async function handleConnection(socket) {
                 socket.terminate();
                 return;
             }
-            
+
             // 使用解析后的 SSH 凭据连接 SSH 服务器
             ssh.connect({
                 host: sshCredentials.ip,

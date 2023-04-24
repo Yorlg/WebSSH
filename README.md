@@ -1,7 +1,6 @@
 # WebSSH
 
-HTML5基于Web的终端仿真器和SSH客户端的基本示例。我们使用SSH2作为主机上的客户机来代理到SSH2服务器的Websocket
-ws连接。
+这是一个基于Web的终端仿真器和SSH客户端的示例，使用Express框架搭建服务器，并使用SSH2代理到SSH服务器的Websocket连接。
 
 ## 功能
 - [x] 支持IP登录
