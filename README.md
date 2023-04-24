@@ -21,11 +21,29 @@
 ## 环境
 Node >= 14
 
+## 构建
+
+执行如下命令下载依赖并构建前端：
+
+```shell
+npm install && npm run build
+```
+
+如需构建 Docker 镜像，可以继续执行以下命令：
+
+```shell
+docker build --tag webssh:dev .
+```
+
+>**Note**：必须先构建前端后再构建 Docker 镜像，此举是为了减少安装 WebPack 导致的镜像体积增加。
+
 ## 启动
-下载依赖
-`npm install`
 
-启动程序
-`node server/app`
+构建完成后，在**项目根目录**执行以下命令启动服务端：
 
-访问：`http://127.0.0.1:3000`
+```shell
+node server/app
+```
+
+启动后访问 `http://127.0.0.1:3000` 即可。
+
