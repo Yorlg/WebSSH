@@ -7,11 +7,7 @@ const path = require('path');
 // 启用压缩
 server.use(compression());
 
-server.use(express.static(path.join(__dirname, 'dist')));
-
-server.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
+server.use(express.static('./dist/'));
 
 const readline = require('readline');
 const { NodeSSH } = require('node-ssh');

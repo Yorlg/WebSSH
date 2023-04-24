@@ -103,6 +103,18 @@ window.addEventListener('resize', () => {
 term.open(terminal);
 term.focus();
 
+// 获取右上角退出按钮
+const closeBtn = document.getElementById('exit');
+
+closeBtn.addEventListener('click', () => {
+  ws.close(); // 关闭 WebSocket 连接
+  // 并且清除本地存储的 SSH 凭据 
+  localStorage.removeItem('sshCredentials');
+
+  location.reload();
+});
+
+
 // 用于防抖的函数
 function debounce (fn, delay) {
   let timer = null;
