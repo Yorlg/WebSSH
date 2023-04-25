@@ -1,16 +1,27 @@
 # 构建前端应用程序
-FROM node:lts-alpine AS build
+FROM node:lts-alpine AS frontend
+
+RUN npm install pnpm -g
+
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+
+COPY ./package.json /app
+
+RUN pnpm install
+
+COPY . /app
+
+RUN pnpm run build
 
 # 运行生产应用程序
 FROM node:lts-alpine
+
 WORKDIR /app
-COPY --from=build /app/build ./build
-COPY package*.json ./
+
+COPY . /app
+
 RUN npm install --production
+
 EXPOSE 8080
-CMD ["npm", "start"]
+
+CMD ["node", "/app/server/app.js"]

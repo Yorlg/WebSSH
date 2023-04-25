@@ -3,12 +3,12 @@
   "version": "1.1.0",
   "description": "",
   "main": "app.js",
+  "author": "Yorlg <i@yorlg.net>",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
     "build": "webpack --config webpack.config.js",
     "start": "webpack-dev-server --open"
   },
-  "author": "Yorlg",
   "license": "ISC",
   "dependencies": {
     "compression": "^1.7.4",
