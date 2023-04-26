@@ -20,6 +20,8 @@ WORKDIR /app
 
 COPY . /app
 
+COPY --from=frontend /app/dist /app/dist
+
 RUN npm install --production
 
 EXPOSE 8080
