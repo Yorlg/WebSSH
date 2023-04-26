@@ -3,6 +3,8 @@
 这是一个基于Web的终端仿真器和SSH客户端的示例，使用Express框架搭建服务器，并使用NodeSSH代理到SSH服务器的Websocket连接。
 
 ## 示例图
+# [预览地址](https://ssh.yorlg.it/)
+
 ![cover](./docs/c1.png)
 ![cover2](./docs/c2.png)
 ![cover3](./docs/c3.png)
