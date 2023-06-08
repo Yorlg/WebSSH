@@ -2,7 +2,6 @@ const express = require("express");
 const server = express();
 const compression = require('compression');
 require("express-ws")(server);
-const path = require('path');
 
 // 启用压缩
 server.use(compression());

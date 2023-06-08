@@ -28,6 +28,15 @@ body,
   cursor: pointer;
 }
 
+a {
+  position: absolute;
+  z-index: 1000;
+  top: 10px;
+  right: 100px;
+  text-decoration: none;
+  color: #fff;
+}
+
 /* 隐藏滚动条 */
 ::-webkit-scrollbar {
   width: 0;
