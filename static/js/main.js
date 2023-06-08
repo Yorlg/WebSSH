@@ -6,7 +6,6 @@ import '../css/style.css';
 const terminal = document.getElementById('terminal');
 let ws;
 
-
 function connectWebSocket (sshCredentials) {
   const isHttps = location.protocol === 'https:';
   ws = new WebSocket(`${isHttps ? "wss" : "ws"}://${location.hostname}:${location.port}/ssh`);
@@ -113,7 +112,6 @@ closeBtn.addEventListener('click', () => {
 
   location.reload();
 });
-
 
 // 用于防抖的函数
 function debounce (fn, delay) {
