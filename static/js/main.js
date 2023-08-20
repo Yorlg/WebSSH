@@ -27,7 +27,6 @@ function connectWebSocket (sshCredentials) {
       ws.send(e)
     });
   });
-
 }
 
 const form = document.getElementById('ssh-form');
