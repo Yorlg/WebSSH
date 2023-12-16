@@ -1,7 +1,12 @@
 const express = require("express");
 const server = express();
 const compression = require('compression');
-require("express-ws")(server);
+require("express-ws")(server, null, {
+    // 设置最大负载大小为16MB
+    wsOptions: {
+        maxPayload: 16 * 1024 * 1024
+    }
+});
 
 // 启用压缩
 server.use(compression());
@@ -78,10 +83,38 @@ async function handleConnection (socket) {
                             socket.send(data.toString());
                         });
 
+                        // socket.on('message', (data) => {
+                        //     // if (sshCredentialsReceived) { // 确保 SSH 凭据已接收
+                        //     //     isAlive = true;
+                        //     //     stream.write(data);
+                        //     // }
+                        // });
+
                         socket.on('message', (data) => {
-                            if (sshCredentialsReceived) { // 确保 SSH 凭据已接收
-                                isAlive = true;
-                                stream.write(data);
+                            if (typeof data !== 'string') {
+                                console.error('接收到非字符串信息');
+                                return; // 提前返回以避免深层嵌套
+                            }
+
+                            try {
+                                const message = JSON.parse(data);
+
+                                if (message.action === 'resize') {
+                                    // 调整终端大小
+                                    stream.setWindow(message.rows, message.cols);
+                                } else if (sshCredentialsReceived) {
+                                    // 处理非 'resize' 操作的消息
+                                    isAlive = true;
+                                    stream.write(data);
+                                }
+                            } catch (e) {
+                                // 解析失败，但数据是字符串
+                                if (sshCredentialsReceived) {
+                                    isAlive = true;
+                                    stream.write(data);
+                                } else {
+                                    console.error('SSH 凭据未接收');
+                                }
                             }
                         });
 

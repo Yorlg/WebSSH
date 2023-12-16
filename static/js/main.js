@@ -1,7 +1,7 @@
 import { Terminal } from 'xterm';
-import 'xterm/css/xterm.css';
-import * as FitAddon from 'xterm-addon-fit';
-import '../css/style.css';
+require('xterm/css/xterm.css');
+import { FitAddon } from 'xterm-addon-fit';
+require('../css/style.css');
 
 const terminal = document.getElementById('terminal');
 let ws;
@@ -16,14 +16,13 @@ function connectWebSocket (sshCredentials) {
 
     ws.onmessage = (event) => {
       term.write(event.data)
-
       debounce(() => {
-        fitAddon.fit();
-        term.resize(80, term.rows);
+        resize();
       }, 1000)();
     };
 
     term.onData((e) => {
+      console.log(111, e);
       ws.send(e)
     });
   });
@@ -66,13 +65,13 @@ window.addEventListener('load', () => {
   } else {
     overlay.style.display = 'block';
   }
+
+
+  resize();
 });
 
 
 const term = new Terminal({
-  rendererType: "canvas",
-  rows: 45,
-  convertEol: true,
   cursorStyle: "underline",
   cursorBlink: true,
   rightClickSelectsWord: true,
@@ -80,26 +79,40 @@ const term = new Terminal({
     foreground: '#F8F8F8',
     background: '#2D2E2C',
     cursor: "help",
-    lineHeight: 14,
+    lineHeight: 10,
+
   },
-  fontFamily: '"Cascadia Code", Menlo, monospace'
+  fontFamily: '"Cascadia Code", Menlo, monospace',
+  screenKeys: true,
+  useStyle: true,
 });
 
-const fitAddon = new FitAddon.FitAddon();
+const fitAddon = new FitAddon();
 term.loadAddon(fitAddon);
 
 term.writeln("Welcome to \x1b[1;32mYorlg\x1b[0m.")
 term.writeln('This is Web Terminal of Modb;\n')
 
-fitAddon.fit();
-
-window.addEventListener('resize', () => {
-  fitAddon.fit();
-  term.resize(80, term.rows);
-});
-
 term.open(terminal);
-term.focus();
+term.focus()
+
+
+
+const resize = () => {
+  const dimensions = fitAddon.proposeDimensions();
+  if (dimensions?.cols && dimensions?.rows) {
+    fitAddon.fit();
+
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ action: 'resize', cols: dimensions.cols, rows: dimensions.rows }));
+    }
+  }
+
+}
+
+window.onresize = debounce(() => {
+  resize();
+}, 1000);
 
 // 获取右上角退出按钮
 const closeBtn = document.getElementById('exit');

@@ -7,12 +7,18 @@ body,
   padding: 0;
 }
 
+
 .terminal,
 .terminal-container,
 .xterm-screen {
   width: 100% !important;
   height: 100% !important;
   overflow: hidden;
+}
+
+.xterm .xterm-viewport {
+  /* see : https://github.com/xtermjs/xterm.js/issues/3564#issuecomment-1004417440 */
+  width: initial !important;
 }
 
 /* 退出登录的按钮 */
