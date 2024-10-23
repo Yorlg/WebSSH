@@ -51,6 +51,7 @@ async function handleConnection (socket) {
                 sshCredentialsReceived = true; // 更新状态变量
             } catch (err) {
                 console.error('解析 SSH 凭据时出错', err);
+                socket.send(JSON.stringify({ error: 'Invalid SSH credentials' }));
                 socket.terminate();
                 return;
             }
@@ -129,11 +130,13 @@ async function handleConnection (socket) {
                         timer = setTimeout(checkAlive, 1000 * 60 * 10); // 10 分钟
                     }).catch((err) => {
                         console.error('创建 SSH Shell 失败', err);
+                        socket.send(JSON.stringify({ error: 'Failed to create SSH shell' }));
                         socket.terminate();
                         ssh.dispose(); // 关闭 SSH 连接
                     });
                 }).catch((err) => {
                     console.error('SSH 连接错误', err);
+                    socket.send(JSON.stringify({ error: 'SSH connection error' }));
                     socket.terminate();
                 });
         } else {
@@ -147,6 +150,14 @@ async function handleConnection (socket) {
     // 监听 WebSocket 连接错误
     socket.on('error', (err) => {
         console.error('WebSocket 连接错误', err);
+        socket.send(JSON.stringify({ error: 'WebSocket connection error' }));
+        ssh.dispose(); // 关闭 SSH 连接
+    });
+
+    // 监听 WebSocket 连接关闭
+    socket.on('close', () => {
+        console.log('WebSocket 连接已关闭');
+        socket.send(JSON.stringify({ error: 'WebSocket connection closed' }));
         ssh.dispose(); // 关闭 SSH 连接
     });
 }

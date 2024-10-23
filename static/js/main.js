@@ -26,6 +26,17 @@ function connectWebSocket (sshCredentials) {
       ws.send(e)
     });
   });
+
+  ws.addEventListener('error', (event) => {
+    showErrorModal('WebSocket connection error. Please try reconnecting.');
+  });
+
+  ws.addEventListener('close', (event) => {
+    showErrorModal('WebSocket connection closed. Attempting to reconnect...');
+    setTimeout(() => {
+      connectWebSocket(sshCredentials);
+    }, 5000);
+  });
 }
 
 const form = document.getElementById('ssh-form');
@@ -134,4 +145,21 @@ function debounce (fn, delay) {
       fn.apply(this, arguments);
     }, delay);
   };
+}
+
+function showErrorModal(message) {
+  const errorModal = document.createElement('div');
+  errorModal.classList.add('error-modal');
+  errorModal.innerHTML = `
+    <div class="error-modal-content">
+      <span class="error-modal-close">&times;</span>
+      <p>${message}</p>
+    </div>
+  `;
+  document.body.appendChild(errorModal);
+
+  const closeModal = errorModal.querySelector('.error-modal-close');
+  closeModal.addEventListener('click', () => {
+    document.body.removeChild(errorModal);
+  });
 }
