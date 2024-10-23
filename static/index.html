@@ -1,47 +1,38 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Web Terminal</title>
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <title>Web Terminal</title>
-</head>
-
-<body>
-  <!-- 终端 -->
-  <div id="terminal"></div>
-  <!-- 连接弹窗 -->
-  <div id="overlay" class="overlay">
-    <form id="ssh-form" class="ssh-form" autocomplete="off">
-      <label for="ip">IP 地址:</label>
-      <input type="text" id="ip" required>
-      <br>
-      <label for="port">端口:</label>
-      <input type="number" id="port" required>
-      <br>
-      <label for="username">用户名:</label>
-      <input type="text" id="username" required>
-      <br>
-      <label for="password">密码:</label>
-      <input type="password" id="password" required>
-      <br>
-      <button type="submit">连接</button>
-    </form>
-  </div>
-  <!-- 右侧需要一个浮着一个退出连接的按钮 -->
-  <div id="exit" class="exit">
-    <button type="button">退出连接</button>
-  </div>
-  <!-- 源码地址 -->
-  <a href="https://github.com/Yorlg/WebSSH" target="_blank">
-    Github源码
-  </a>
-  <!-- 错误弹窗 -->
-  <div id="error-modal" class="error-modal" style="display: none;">
-    <div class="error-modal-content">
-      <span class="error-modal-close">&times;</span>
-      <p id="error-message"></p>
+  <body>
+    <!-- 终端 -->
+    <div id="terminal"></div>
+    <!-- 连接弹窗 -->
+    <div id="overlay" class="overlay">
+      <form id="ssh-form" class="ssh-form" autocomplete="off">
+        <label for="ip">IP 地址:</label>
+        <input type="text" id="ip" required />
+        <br />
+        <label for="port">端口:</label>
+        <input type="number" id="port" required />
+        <br />
+        <label for="username">用户名:</label>
+        <input type="text" id="username" required />
+        <br />
+        <label for="password">密码:</label>
+        <input type="password" id="password" required />
+        <br />
+        <button type="submit">连接</button>
+      </form>
     </div>
-  </div>
-</body>
-
+    <!-- 右侧需要一个浮着一个退出连接的按钮 -->
+    <div id="exit" class="exit">
+      <button type="button">退出连接</button>
+    </div>
+    <!-- 源码地址 -->
+    <a href="https://github.com/Yorlg/WebSSH" target="_blank"> Github源码 </a>
+    <!-- 错误提示 -->
+    <div id="error-container"></div>
+  </body>
 </html>

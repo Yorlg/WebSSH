@@ -104,3 +104,30 @@ a {
 .ssh-form button[type="submit"]:hover {
   background-color: #3E8E41;
 }
+
+#error-container {
+  position: absolute;
+  top: 40px;
+  right: 10px;
+  z-index: 1000;
+}
+
+.error-modal {
+  margin-top: 10px;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.error-modal-content {
+  padding: 15px;
+}
+
+.error-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+}

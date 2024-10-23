@@ -6,33 +6,37 @@ require('../css/style.css');
 const terminal = document.getElementById('terminal');
 let ws;
 
-function connectWebSocket (sshCredentials) {
+function connectWebSocket(sshCredentials) {
   const isHttps = location.protocol === 'https:';
-  ws = new WebSocket(`${isHttps ? "wss" : "ws"}://${location.hostname}:${location.port}/ssh`);
+  ws = new WebSocket(
+    `${isHttps ? 'wss' : 'ws'}://${location.hostname}:${location.port}/ssh`
+  );
 
   ws.addEventListener('open', (event) => {
     ws.send(JSON.stringify(sshCredentials));
     overlay.style.display = 'none';
 
     ws.onmessage = (event) => {
-      term.write(event.data)
+      term.write(event.data);
       debounce(() => {
         resize();
       }, 1000)();
     };
 
     term.onData((e) => {
-      console.log(111, e);
-      ws.send(e)
+      ws.send(e);
     });
   });
 
   ws.addEventListener('error', (event) => {
-    showErrorModal('WebSocket connection error. Please try reconnecting.');
+    showErrorModal('WebSocket 连接错误。请尝试重新连接。', 'error-container');
   });
 
   ws.addEventListener('close', (event) => {
-    showErrorModal('WebSocket connection closed. Attempting to reconnect...');
+    showErrorModal(
+      'WebSocket 连接已关闭。正在尝试重新连接...',
+      'error-container'
+    );
     setTimeout(() => {
       connectWebSocket(sshCredentials);
     }, 5000);
@@ -77,21 +81,18 @@ window.addEventListener('load', () => {
     overlay.style.display = 'block';
   }
 
-
   resize();
 });
 
-
 const term = new Terminal({
-  cursorStyle: "underline",
+  cursorStyle: 'underline',
   cursorBlink: true,
   rightClickSelectsWord: true,
   theme: {
     foreground: '#F8F8F8',
     background: '#2D2E2C',
-    cursor: "help",
+    cursor: 'help',
     lineHeight: 10,
-
   },
   fontFamily: '"Cascadia Code", Menlo, monospace',
   screenKeys: true,
@@ -101,25 +102,28 @@ const term = new Terminal({
 const fitAddon = new FitAddon();
 term.loadAddon(fitAddon);
 
-term.writeln("Welcome to \x1b[1;32mYorlg\x1b[0m.")
-term.writeln('This is Web Terminal of Modb;\n')
+term.writeln('Welcome to \x1b[1;32mYorlg\x1b[0m.');
+term.writeln('This is Web Terminal of Modb;\n');
 
 term.open(terminal);
-term.focus()
-
-
+term.focus();
 
 const resize = () => {
   const dimensions = fitAddon.proposeDimensions();
   if (dimensions?.cols && dimensions?.rows) {
     fitAddon.fit();
 
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ action: 'resize', cols: dimensions.cols, rows: dimensions.rows }));
+    if (ws?.readyState === WebSocket.OPEN) {
+      ws.send(
+        JSON.stringify({
+          action: 'resize',
+          cols: dimensions.cols,
+          rows: dimensions.rows,
+        })
+      );
     }
   }
-
-}
+};
 
 window.onresize = debounce(() => {
   resize();
@@ -130,14 +134,14 @@ const closeBtn = document.getElementById('exit');
 
 closeBtn.addEventListener('click', () => {
   ws.close(); // 关闭 WebSocket 连接
-  // 并且清除本地存储的 SSH 凭据 
+  // 并且清除本地存储的 SSH 凭据
   localStorage.removeItem('sshCredentials');
 
   location.reload();
 });
 
 // 用于防抖的函数
-function debounce (fn, delay) {
+function debounce(fn, delay) {
   let timer = null;
   return function () {
     clearTimeout(timer);
@@ -147,7 +151,13 @@ function debounce (fn, delay) {
   };
 }
 
-function showErrorModal(message) {
+function showErrorModal(message, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) {
+    console.error(`Container with ID ${containerId} not found.`);
+    return;
+  }
+
   const errorModal = document.createElement('div');
   errorModal.classList.add('error-modal');
   errorModal.innerHTML = `
@@ -156,10 +166,17 @@ function showErrorModal(message) {
       <p>${message}</p>
     </div>
   `;
-  document.body.appendChild(errorModal);
+  container.appendChild(errorModal);
 
   const closeModal = errorModal.querySelector('.error-modal-close');
   closeModal.addEventListener('click', () => {
-    document.body.removeChild(errorModal);
+    container.removeChild(errorModal);
   });
+
+  // 自动消失
+  setTimeout(() => {
+    if (container.contains(errorModal)) {
+      container.removeChild(errorModal);
+    }
+  }, 5000); // 5秒后自动消失
 }
