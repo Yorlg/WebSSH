@@ -9,13 +9,14 @@ module.exports = {
   },
   devServer: {
     port: 9530,
-    proxy: {
-      '/ssh': {
+    proxy: [
+      {
+        pathFilter: '/ssh',
         target: 'http://localhost:8080',
         ws: true,
         changeOrigin: true,
       }
-    }
+    ]
 
   },
   output: {
