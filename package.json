@@ -11,7 +11,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "compression": "^1.8.1",
+    "compression": "^1.8.2",
     "express": "^5.2.1",
     "express-ws": "^5.0.2",
     "node-ssh": "^13.2.1",
